@@ -1,0 +1,45 @@
+
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.ant-col-16 {
+  /* --ant-display: block; */
+  /* display: block; */
+  display: var(--ant-display);
+  flex: 1 !important;
+  max-width: 100%;
+}
+
+.ant-btn-primary{
+  background-color: green !important;
+}
+
+.activeArrow::after{
+  content: ' ';
+  right: -15px;
+  z-index: 1;
+  position: absolute;
+  width: 30px;
+  transform: rotate(45deg);
+  height: 30px;
+  background: #d0f7fa;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
