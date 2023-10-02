@@ -29,3 +29,16 @@ export interface CompanyData {
   companyName: string;
   opportunity: Opportunity[];
 }
+
+export interface TotalData {
+  applied: number;
+  recommended: number;
+  interview: number;
+  offer: number;
+  hired: number;
+}
+
+export interface TotalsTableProps {
+  totals: TotalData;
+  section: string;
+}
