@@ -5,6 +5,7 @@ import NoContent from "./NoContent";
 import { CompanyData, OpportunityData, Opportunity } from "./app.interface";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { TotalData, calculateColumnTotals } from "./utils";
 const { TabPane } = Tabs;
 
 interface dt {
@@ -227,10 +228,62 @@ const Overview: React.FC = () => {
       display: false, // Hide the default legend
     },
   };
+  const active: TotalData = calculateColumnTotals(generatedData, "active");
+  const disqualified: TotalData = calculateColumnTotals(generatedData, "disqualified");
+  const smallTable = [
+    {
+      key: "applied",
+      column: "Applied",
+      active: active.applied,
+      disqualified: disqualified.applied,
+    },
+    {
+      key: "recommended",
+      column: "Recommended",
+      active: active.recommended,
+      disqualified: disqualified.recommended,
+    },
+    {
+      key: "interview",
+      column: "Interview",
+      active: active.interview,
+      disqualified: disqualified.interview,
+    },
+    {
+      key: "offer",
+      column: "Offer",
+      active: active.offer,
+      disqualified: disqualified.offer,
+    },
+    {
+      key: "hired",
+      column: "Hired",
+      active: active.hired,
+      disqualified: disqualified.hired,
+    },
+  ];
+
+  const smallColumns = [
+    {
+      title: "Column",
+      dataIndex: "column",
+      key: "column",
+    },
+    {
+      title: "Active",
+      dataIndex: "active",
+      key: "active",
+    },
+    {
+      title: "Disqualified",
+      dataIndex: "disqualified",
+      key: "disqualified",
+    },
+  ];
 
   return (
     <div className="w-full h-full overflow-scroll bg-[#F9FAFF]">
-        <div className="text-red-500">working in progress</div>
+      <div className="text-red-500">working in progress</div>
       <div className="m-5 flex gap-7">
         <div className="flex-[3]">
           <div className="flex gap-5 my-3">
@@ -245,8 +298,28 @@ const Overview: React.FC = () => {
                 </span>
               </div>
             </div>
-            <div className="bg-white flex-1 h-40"></div>
-            <div className="bg-white flex-1 h-40"></div>
+            <div className="bg-white flex-1 h-40 flex flex-col justify-between p-5">
+              <div className="font-bold text-lg">Offer</div>
+              <div className="font-bold text-xl">2,642</div>
+              <div>Previous Period</div>
+              <div>
+                1590{" "}
+                <span>
+                  <Tag color="magenta">10%</Tag>{" "}
+                </span>
+              </div>
+            </div>
+            <div className="bg-white flex-1 h-40 flex flex-col justify-between p-5">
+              <div className="font-bold text-lg">Hired</div>
+              <div className="font-bold text-xl">8,373</div>
+              <div>Previous Period</div>
+              <div>
+                1590{" "}
+                <span>
+                  <Tag color="magenta">10%</Tag>{" "}
+                </span>
+              </div>
+            </div>
           </div>
           <div className="bg-white my-5 p-5">
             <div className="w-full">
@@ -268,13 +341,18 @@ const Overview: React.FC = () => {
               <div className="font-bold text-xl">3,122</div>
               <Progress percent={60} size="small" />
 
-              <div></div>
+              <div>
+              <h2>Total Data</h2>
+      <Table pagination={false} columns={smallColumns} dataSource={smallTable} />
+              </div>
             </div>
             <div className="flex-[1] ">
               <div className="flex gap-7">
                 <div className="bg-white flex-1 h-40 flex flex-col justify-between p-5">
-                  <div className="font-bold text-lg">Applied</div>
-                  <div className="font-bold text-xl">3,122</div>
+                  <div className="flex justify-between">
+                    <div className="font-bold text-base">Recommended</div>
+                    <div className="font-bold text-base">1,265</div>
+                  </div>
                   <div>Previous Period</div>
                   <div>
                     1590{" "}
@@ -284,8 +362,10 @@ const Overview: React.FC = () => {
                   </div>
                 </div>
                 <div className="bg-white flex-1 h-40 flex flex-col justify-between p-5">
-                  <div className="font-bold text-lg">Applied</div>
-                  <div className="font-bold text-xl">3,122</div>
+                  <div className="flex justify-between">
+                    <div className="font-bold text-base">Interview</div>
+                    <div className="font-bold text-base">422</div>
+                  </div>
                   <div>Previous Period</div>
                   <div>
                     1590{" "}
@@ -300,39 +380,37 @@ const Overview: React.FC = () => {
         </div>
       </div>
 
-      <div>
-
-      </div>
+      <div></div>
 
       <div className="m-5">
         <div></div>
         <div></div>
         <Space direction="vertical" size={30} className="w-full">
-        {transformedData.map((company) => (
-          <div key={company.companyName} className="w-full">
-            <h2>{company.companyName}</h2>
-            <Tabs defaultActiveKey="active" tabPosition="top">
-              <TabPane tab="Active" key="active">
-                <Table
-                  dataSource={company.opportunityData}
-                  columns={columns}
-                  pagination={false}
-                />
-              </TabPane>
-              <TabPane tab="Disqualified" key="disqualified">
-                <Table
-                  dataSource={company.opportunityData.map((opportunity) => ({
-                    ...opportunity,
-                    status: "Disqualified",
-                  }))}
-                  columns={columns}
-                  pagination={false}
-                />
-              </TabPane>
-            </Tabs>
-          </div>
-        ))}
-      </Space>
+          {transformedData.map((company) => (
+            <div key={company.companyName} className="w-full">
+              <h2>{company.companyName}</h2>
+              <Tabs defaultActiveKey="active" tabPosition="top">
+                <TabPane tab="Active" key="active">
+                  <Table
+                    dataSource={company.opportunityData}
+                    columns={columns}
+                    pagination={false}
+                  />
+                </TabPane>
+                <TabPane tab="Disqualified" key="disqualified">
+                  <Table
+                    dataSource={company.opportunityData.map((opportunity) => ({
+                      ...opportunity,
+                      status: "Disqualified",
+                    }))}
+                    columns={columns}
+                    pagination={false}
+                  />
+                </TabPane>
+              </Tabs>
+            </div>
+          ))}
+        </Space>
       </div>
       {/* 
       <Space direction="vertical" size={30}>
